@@ -360,15 +360,33 @@ section {
   line-height: 1.65;
 }
 
-/* Flow diagram */
-.flow-diagram {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0;
-  padding: 32px 0;
+/* 4-col process grid */
+.process-grid-4 {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
+
+/* Mapping list inside card */
+.mapping-list {
+  list-style: none;
+  margin-top: 10px;
+  padding: 0;
+}
+.mapping-list li {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--fg-dim);
+  padding: 4px 0 4px 14px;
+  position: relative;
+  line-height: 1.6;
+}
+.mapping-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
+/* Flow diagram — shared */
 .flow-node {
   font-family: var(--font-mono);
   font-size: clamp(0.65rem, 1.2vw, 0.8rem);
@@ -376,12 +394,70 @@ section {
   border: 1px solid var(--border);
   padding: 10px 18px;
   white-space: nowrap;
+  position: relative;
+}
+.flow-node-hub {
+  border-color: var(--accent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.flow-node-sub {
+  font-size: 0.6rem;
+  color: var(--accent);
+  opacity: 0.7;
+}
+.flow-node-out {
+  background: var(--accent-dim);
 }
 .flow-arrow {
   font-family: var(--font-mono);
   font-size: 0.8rem;
   color: var(--accent);
   padding: 0 8px;
+}
+
+/* Split flow layout */
+.flow-split {
+  padding: 40px 0 0;
+}
+.flow-split-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+}
+.flow-split-branches {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 640px;
+  padding-top: 16px;
+  border-left: 1px solid rgba(57, 255, 20, 0.25);
+  margin-left: calc(50% + 20px);
+  padding-left: 20px;
+  position: relative;
+}
+.flow-split-branches::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -1px;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+}
+.flow-branch {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.flow-branch-line {
+  display: none;
 }
 
 /* Demo section */
@@ -501,16 +577,24 @@ footer p {
   .nav-links a {
     font-size: 0.65rem;
   }
-  .flow-diagram {
+  .process-grid,
+  .process-grid-4 {
+    grid-template-columns: 1fr;
+  }
+  .flow-split-top {
     flex-direction: column;
     gap: 4px;
   }
-  .flow-arrow {
+  .flow-split-top .flow-arrow {
     transform: rotate(90deg);
     padding: 4px 0;
   }
-  .process-grid {
-    grid-template-columns: 1fr;
+  .flow-split-branches {
+    margin-left: 32px;
+  }
+  .flow-branch {
+    flex-wrap: wrap;
+    gap: 4px;
   }
 }
 
@@ -610,33 +694,59 @@ footer p {
       <p class="section-label">How It Works</p>
       <h2 style="font-family:var(--font-mono);font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;color:#fff;margin-bottom:40px;letter-spacing:-0.02em;">From Movement to Sound</h2>
     </div>
-    <div class="process-grid">
+    <div class="process-grid process-grid-4">
       <div class="process-card reveal">
         <p class="step-num">01</p>
         <h3>CAPTURE</h3>
-        <p>Camera tracking detects body position, gesture speed, and proximity in real-time</p>
+        <p>MediaPipe Hand Tracking via webcam detects 21 landmarks per hand in real-time. Two core data streams are extracted: hand position (x, y, z coordinates) and the distance between both hands.</p>
       </div>
       <div class="process-card reveal">
         <p class="step-num">02</p>
-        <h3>TRANSLATE</h3>
-        <p>TouchDesigner maps movement data to audio parameters — volume, reverb depth, effect intensity, pitch modulation</p>
+        <h3>SIGNAL PROCESSING</h3>
+        <p>TouchDesigner receives raw tracking data and processes it through CHOPs — smoothing noise, normalizing ranges, and converting hand coordinates into clean control signals ready for parameter mapping.</p>
       </div>
       <div class="process-card reveal">
         <p class="step-num">03</p>
-        <h3>GENERATE</h3>
-        <p>Ableton Live receives OSC signals and produces sound that directly mirrors the audience's physical presence</p>
+        <h3>AUDIO MAPPING</h3>
+        <p>Processed signals are sent to Ableton Live via OSC:</p>
+        <ul class="mapping-list">
+          <li>Hand position (x, y) → Volume & Pitch</li>
+          <li>Distance between hands → Reverb depth & Delay intensity</li>
+          <li>Rapid movement detection → Glitch system activation</li>
+        </ul>
+      </div>
+      <div class="process-card reveal">
+        <p class="step-num">04</p>
+        <h3>VISUAL FEEDBACK</h3>
+        <p>Simultaneously, the same CHOP data drives visual parameters in TouchDesigner — particle behavior, color shifts, geometry transformations — creating a unified audiovisual response to every gesture.</p>
       </div>
     </div>
-    <div class="flow-diagram reveal">
-      <span class="flow-node">Camera</span>
-      <span class="flow-arrow">→</span>
-      <span class="flow-node">TouchDesigner</span>
-      <span class="flow-arrow">→</span>
-      <span class="flow-node">OSC</span>
-      <span class="flow-arrow">→</span>
-      <span class="flow-node">Ableton</span>
-      <span class="flow-arrow">→</span>
-      <span class="flow-node">Speaker</span>
+    <div class="flow-split reveal">
+      <div class="flow-split-top">
+        <span class="flow-node">Webcam</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node">MediaPipe</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node flow-node-hub">TouchDesigner<span class="flow-node-sub">CHOP</span></span>
+      </div>
+      <div class="flow-split-branches">
+        <div class="flow-branch">
+          <span class="flow-branch-line"></span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node">OSC</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node">Ableton Live</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node flow-node-out">Audio Output</span>
+        </div>
+        <div class="flow-branch">
+          <span class="flow-branch-line"></span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node">Visual Engine</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node flow-node-out">Display</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
