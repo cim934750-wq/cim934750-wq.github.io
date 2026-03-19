@@ -124,19 +124,6 @@ body {
 .reveal-stagger .reveal:nth-child(3) { transition-delay: 0.2s; }
 .reveal-stagger .reveal:nth-child(4) { transition-delay: 0.3s; }
 
-/* 3D tilt cards */
-.tilt {
-  transform-style: preserve-3d;
-  transition: transform 0.1s ease;
-}
-.tilt-inner {
-  transform: translateZ(20px);
-}
-
-/* Magnetic button effect */
-.btn-magnetic {
-  transition: box-shadow 0.3s, transform 0.15s ease-out;
-}
 
 /* Glow text on scroll */
 .glow-on-scroll {
@@ -297,7 +284,6 @@ nav.scrolled {
 }
 .hero-content {
   padding: clamp(40px, 8vh, 80px) 0;
-  perspective: 800px;
 }
 .hero-label {
   font-family: var(--font-mono);
@@ -336,12 +322,11 @@ nav.scrolled {
   padding: 14px 32px;
   text-decoration: none;
   letter-spacing: 0.02em;
-  transform-style: preserve-3d;
   transition: box-shadow 0.4s, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .btn-primary:hover {
   box-shadow: 0 0 24px rgba(57, 255, 20, 0.4);
-  transform: translateY(-3px) rotateX(-5deg) rotateY(3deg) !important;
+  transform: perspective(800px) translateY(-3px) rotateX(-5deg) rotateY(3deg);
 }
 .tech-tags {
   display: flex;
@@ -350,7 +335,6 @@ nav.scrolled {
   margin-top: 32px;
   padding-top: 32px;
   border-top: 1px solid var(--border);
-  perspective: 800px;
 }
 .tech-tags span {
   font-family: var(--font-mono);
@@ -359,13 +343,12 @@ nav.scrolled {
   border: 1px solid var(--border);
   padding: 6px 14px;
   letter-spacing: 0.04em;
-  transform-style: preserve-3d;
   transition: border-color 0.3s, color 0.3s, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .tech-tags span:hover {
   border-color: rgba(57, 255, 20, 0.3);
   color: var(--accent);
-  transform: translateY(-2px) rotateX(-3deg) rotateY(2deg) !important;
+  transform: perspective(800px) translateY(-2px) rotateX(-3deg) rotateY(2deg);
 }
 
 /* Section spacing */
@@ -513,15 +496,14 @@ section {
   padding: 10px 18px;
   white-space: nowrap;
   position: relative;
-  transform-style: preserve-3d;
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s;
 }
 .flow-node:nth-child(odd):hover {
-  transform: translateY(-3px) rotateX(-5deg) rotateY(3deg) !important;
+  transform: perspective(800px) translateY(-3px) rotateX(-5deg) rotateY(3deg);
   border-color: rgba(57, 255, 20, 0.4);
 }
 .flow-node:nth-child(even):hover {
-  transform: translateY(-3px) rotateX(-5deg) rotateY(-3deg) !important;
+  transform: perspective(800px) translateY(-3px) rotateX(-5deg) rotateY(-3deg);
   border-color: rgba(57, 255, 20, 0.4);
 }
 .flow-node-hub {
@@ -548,7 +530,9 @@ section {
 
 /* Flow diagram */
 .flow-diagram {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 40px 0 0;
 }
 .flow-row {
@@ -557,15 +541,6 @@ section {
   align-items: center;
   justify-content: center;
   gap: 0;
-  perspective: 800px;
-}
-.flow-row-bottom {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  perspective: 800px;
 }
 .flow-stem {
   width: 1px;
@@ -576,7 +551,6 @@ section {
 /* Demo section */
 .demo-content {
   max-width: 600px;
-  perspective: 800px;
 }
 .demo-content h2 {
   font-family: var(--font-mono);
@@ -699,18 +673,9 @@ footer p {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  .flow-row,
-  .flow-row-bottom {
+  .flow-row {
     flex-wrap: wrap;
     gap: 6px;
-  }
-  .flow-stem {
-    left: 50% !important;
-  }
-  .flow-row-bottom {
-    left: 0 !important;
-    width: auto !important;
-    justify-content: center;
   }
 }
 
@@ -856,7 +821,7 @@ footer p {
         <span class="flow-node flow-node-out">Display</span>
       </div>
       <div class="flow-stem" id="flow-stem"></div>
-      <div class="flow-row-bottom" id="flow-row-bottom">
+      <div class="flow-row" id="flow-row-bottom">
         <span class="flow-node">OSC</span>
         <span class="flow-arrow">→</span>
         <span class="flow-node">Ableton Live</span>
@@ -994,23 +959,6 @@ const glowObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.5 });
 glowEls.forEach(el => glowObserver.observe(el));
 
-// 3D Tilt effect on cards
-const tiltCards = document.querySelectorAll('.tilt');
-tiltCards.forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = ((y - centerY) / centerY) * -8;
-    const rotateY = ((x - centerX) / centerX) * 8;
-    card.style.transform = 'perspective(600px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale(1.02)';
-  });
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = 'perspective(600px) rotateX(0) rotateY(0) scale(1)';
-  });
-});
 
 // Hero particles
 const particleContainer = document.querySelector('.hero-particles');
@@ -1028,28 +976,6 @@ if (particleContainer) {
   }
 }
 
-// Parallax on hero — subtle shift based on mouse
-const heroContent = document.querySelector('.hero-content');
-if (heroContent) {
-  document.addEventListener('mousemove', e => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 12;
-    const y = (e.clientY / window.innerHeight - 0.5) * 8;
-    heroContent.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
-  });
-}
-
-// Magnetic button effect
-document.querySelectorAll('.btn-primary').forEach(btn => {
-  btn.addEventListener('mousemove', e => {
-    const rect = btn.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    btn.style.transform = 'translate(' + x * 0.2 + 'px, ' + y * 0.2 + 'px)';
-  });
-  btn.addEventListener('mouseleave', () => {
-    btn.style.transform = 'translate(0, 0)';
-  });
-});
 
 // Tech tags — stagger entrance
 const techTags = document.querySelectorAll('.tech-tags span');
@@ -1073,35 +999,6 @@ const tagObserver = new IntersectionObserver((entries) => {
 const techTagsWrap = document.querySelector('.tech-tags');
 if (techTagsWrap) tagObserver.observe(techTagsWrap);
 
-// Align flow stem + bottom row under TouchDesigner hub center
-function alignFlowDiagram() {
-  const diagram = document.getElementById('flow-diagram');
-  const hub = document.getElementById('flow-hub');
-  const stem = document.getElementById('flow-stem');
-  const bottomRow = document.getElementById('flow-row-bottom');
-  if (!diagram || !hub || !stem || !bottomRow) return;
-
-  const diagramRect = diagram.getBoundingClientRect();
-  const hubRect = hub.getBoundingClientRect();
-
-  // Hub center relative to diagram left
-  const hubCenterX = hubRect.left + hubRect.width / 2 - diagramRect.left;
-
-  // Position stem at hub center
-  stem.style.position = 'relative';
-  stem.style.left = hubCenterX + 'px';
-  stem.style.transform = 'translateX(-50%)';
-
-  // Position bottom row so its center aligns with hub center
-  const bottomWidth = bottomRow.scrollWidth;
-  const offsetX = hubCenterX - bottomWidth / 2;
-  bottomRow.style.position = 'relative';
-  bottomRow.style.left = offsetX + 'px';
-  bottomRow.style.width = 'fit-content';
-}
-
-window.addEventListener('load', alignFlowDiagram);
-window.addEventListener('resize', alignFlowDiagram);
 </script>
 </body>
 </html>
