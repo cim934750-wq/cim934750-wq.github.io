@@ -493,24 +493,22 @@ section {
   border: 1px solid var(--border);
   padding: 10px 18px;
   white-space: nowrap;
-  position: relative;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s ease;
 }
 .flow-node:hover {
-  border-color: rgba(57, 255, 20, 0.4);
+  border-color: var(--accent);
+  box-shadow: 0 0 16px rgba(57, 255, 20, 0.3);
+  transform: scale(1.05);
 }
 .flow-node-hub {
   border-color: var(--accent);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  position: relative;
 }
 .flow-node-sub {
   font-size: 0.6rem;
   color: var(--accent);
   opacity: 0.7;
+  display: block;
+  text-align: center;
 }
 .flow-node-out {
   background: var(--accent-dim);
@@ -519,24 +517,45 @@ section {
   font-family: var(--font-mono);
   font-size: 0.8rem;
   color: var(--accent);
-  padding: 0 8px;
+  text-align: center;
 }
 
-/* Flow diagram */
+/* Flow diagram — CSS grid */
 .flow-diagram {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto auto auto auto;
+  justify-content: center;
+  align-items: center;
+  gap: 0 0;
   padding: 40px 0 0;
-  gap: 0;
-  overflow: visible;
 }
+.flow-diagram .flow-node,
+.flow-diagram .flow-arrow {
+  padding: 10px 12px;
+}
+/* Top row: spans all 9 columns via individual placement */
+.flow-top-1 { grid-column: 1; grid-row: 1; }
+.flow-top-2 { grid-column: 2; grid-row: 1; }
+.flow-top-3 { grid-column: 3; grid-row: 1; }
+.flow-top-4 { grid-column: 4; grid-row: 1; }
+.flow-top-5 { grid-column: 5; grid-row: 1; }
+.flow-top-6 { grid-column: 6; grid-row: 1; }
+.flow-top-7 { grid-column: 7; grid-row: 1; }
+.flow-top-8 { grid-column: 8; grid-row: 1; }
+.flow-top-9 { grid-column: 9; grid-row: 1; }
+/* Stem: sits in column 5 (TouchDesigner column), row 2 */
 .flow-stem {
+  grid-column: 5;
+  grid-row: 2;
   width: 1px;
   height: 40px;
   background: var(--accent);
-  flex-shrink: 0;
+  justify-self: center;
 }
-.flow-row {
+/* Bottom row: spans columns 4-6 centered under column 5 */
+.flow-bottom {
+  grid-column: 1 / -1;
+  grid-row: 3;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -669,15 +688,24 @@ footer p {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  .flow-row {
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-left: 0 !important;
+  .flow-diagram {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 4px 0;
+  }
+  .flow-top-1, .flow-top-2, .flow-top-3, .flow-top-4, .flow-top-5,
+  .flow-top-6, .flow-top-7, .flow-top-8, .flow-top-9 {
+    grid-column: 1;
+    grid-row: auto;
   }
   .flow-stem {
-    margin-left: auto !important;
-    margin-right: auto;
-    transform: none !important;
+    grid-column: 1;
+  }
+  .flow-bottom {
+    grid-column: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
   }
 }
 
@@ -810,20 +838,18 @@ footer p {
         <p>The same CHOP data simultaneously drives visuals in TouchDesigner — particle systems, color shifts, and geometry transformations respond to every gesture.</p>
       </div>
     </div>
-    <div class="flow-diagram reveal" id="flow-diagram">
-      <div class="flow-row" id="flow-row-top">
-        <span class="flow-node">Webcam</span>
-        <span class="flow-arrow">→</span>
-        <span class="flow-node">MediaPipe</span>
-        <span class="flow-arrow">→</span>
-        <span class="flow-node flow-node-hub" id="flow-hub">TouchDesigner<span class="flow-node-sub">CHOP</span></span>
-        <span class="flow-arrow">→</span>
-        <span class="flow-node">Visual Engine</span>
-        <span class="flow-arrow">→</span>
-        <span class="flow-node flow-node-out">Display</span>
-      </div>
+    <div class="flow-diagram reveal">
+      <span class="flow-node flow-top-1">Webcam</span>
+      <span class="flow-arrow flow-top-2">→</span>
+      <span class="flow-node flow-top-3">MediaPipe</span>
+      <span class="flow-arrow flow-top-4">→</span>
+      <span class="flow-node flow-node-hub flow-top-5">TouchDesigner<span class="flow-node-sub">CHOP</span></span>
+      <span class="flow-arrow flow-top-6">→</span>
+      <span class="flow-node flow-top-7">Visual Engine</span>
+      <span class="flow-arrow flow-top-8">→</span>
+      <span class="flow-node flow-node-out flow-top-9">Display</span>
       <div class="flow-stem"></div>
-      <div class="flow-row" id="flow-row-bottom">
+      <div class="flow-bottom">
         <span class="flow-node">OSC</span>
         <span class="flow-arrow">→</span>
         <span class="flow-node">Ableton Live</span>
@@ -1020,26 +1046,7 @@ function addTilt(selector) {
   });
 }
 addTilt('.btn-primary');
-addTilt('.flow-node');
 addTilt('.tech-tags span');
-
-// Align flow stem + bottom row under TouchDesigner hub
-function alignFlow() {
-  const diagram = document.getElementById('flow-diagram');
-  const hub = document.getElementById('flow-hub');
-  const stem = document.querySelector('.flow-stem');
-  const bottom = document.getElementById('flow-row-bottom');
-  if (!diagram || !hub || !stem || !bottom) return;
-  const dRect = diagram.getBoundingClientRect();
-  const hRect = hub.getBoundingClientRect();
-  const hubCenter = hRect.left + hRect.width / 2 - dRect.left;
-  stem.style.marginLeft = hubCenter + 'px';
-  stem.style.transform = 'translateX(-50%)';
-  const bWidth = bottom.scrollWidth;
-  bottom.style.marginLeft = (hubCenter - bWidth / 2) + 'px';
-}
-window.addEventListener('load', alignFlow);
-window.addEventListener('resize', alignFlow);
 </script>
 </body>
 </html>
