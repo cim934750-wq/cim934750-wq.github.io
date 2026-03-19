@@ -297,6 +297,7 @@ nav.scrolled {
 }
 .hero-content {
   padding: clamp(40px, 8vh, 80px) 0;
+  perspective: 800px;
 }
 .hero-label {
   font-family: var(--font-mono);
@@ -340,7 +341,7 @@ nav.scrolled {
 }
 .btn-primary:hover {
   box-shadow: 0 0 24px rgba(57, 255, 20, 0.4);
-  transform: perspective(800px) translateY(-3px) rotateX(-5deg) rotateY(3deg);
+  transform: translateY(-3px) rotateX(-5deg) rotateY(3deg) !important;
 }
 .tech-tags {
   display: flex;
@@ -364,7 +365,7 @@ nav.scrolled {
 .tech-tags span:hover {
   border-color: rgba(57, 255, 20, 0.3);
   color: var(--accent);
-  transform: translateY(-3px) rotateX(-5deg) rotateY(3deg);
+  transform: translateY(-2px) rotateX(-3deg) rotateY(2deg) !important;
 }
 
 /* Section spacing */
@@ -516,11 +517,11 @@ section {
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s;
 }
 .flow-node:nth-child(odd):hover {
-  transform: perspective(800px) translateY(-3px) rotateX(-5deg) rotateY(3deg);
+  transform: translateY(-3px) rotateX(-5deg) rotateY(3deg) !important;
   border-color: rgba(57, 255, 20, 0.4);
 }
 .flow-node:nth-child(even):hover {
-  transform: perspective(800px) translateY(-3px) rotateX(-5deg) rotateY(-3deg);
+  transform: translateY(-3px) rotateX(-5deg) rotateY(-3deg) !important;
   border-color: rgba(57, 255, 20, 0.4);
 }
 .flow-node-hub {
@@ -547,9 +548,7 @@ section {
 
 /* Flow diagram */
 .flow-diagram {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: relative;
   padding: 40px 0 0;
 }
 .flow-row {
@@ -558,17 +557,26 @@ section {
   align-items: center;
   justify-content: center;
   gap: 0;
+  perspective: 800px;
+}
+.flow-row-bottom {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  perspective: 800px;
 }
 .flow-stem {
   width: 1px;
   height: 40px;
   background: var(--accent);
-  margin: 0 auto;
 }
 
 /* Demo section */
 .demo-content {
   max-width: 600px;
+  perspective: 800px;
 }
 .demo-content h2 {
   font-family: var(--font-mono);
@@ -691,9 +699,18 @@ footer p {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  .flow-row {
+  .flow-row,
+  .flow-row-bottom {
     flex-wrap: wrap;
     gap: 6px;
+  }
+  .flow-stem {
+    left: 50% !important;
+  }
+  .flow-row-bottom {
+    left: 0 !important;
+    width: auto !important;
+    justify-content: center;
   }
 }
 
@@ -826,20 +843,20 @@ footer p {
         <p>The same CHOP data simultaneously drives visuals in TouchDesigner — particle systems, color shifts, and geometry transformations respond to every gesture.</p>
       </div>
     </div>
-    <div class="flow-diagram reveal">
-      <div class="flow-row">
+    <div class="flow-diagram reveal" id="flow-diagram">
+      <div class="flow-row" id="flow-row-top">
         <span class="flow-node">Webcam</span>
         <span class="flow-arrow">→</span>
         <span class="flow-node">MediaPipe</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node flow-node-hub">TouchDesigner<span class="flow-node-sub">CHOP</span></span>
+        <span class="flow-node flow-node-hub" id="flow-hub">TouchDesigner<span class="flow-node-sub">CHOP</span></span>
         <span class="flow-arrow">→</span>
         <span class="flow-node">Visual Engine</span>
         <span class="flow-arrow">→</span>
         <span class="flow-node flow-node-out">Display</span>
       </div>
-      <div class="flow-stem"></div>
-      <div class="flow-row">
+      <div class="flow-stem" id="flow-stem"></div>
+      <div class="flow-row-bottom" id="flow-row-bottom">
         <span class="flow-node">OSC</span>
         <span class="flow-arrow">→</span>
         <span class="flow-node">Ableton Live</span>
@@ -1056,6 +1073,35 @@ const tagObserver = new IntersectionObserver((entries) => {
 const techTagsWrap = document.querySelector('.tech-tags');
 if (techTagsWrap) tagObserver.observe(techTagsWrap);
 
+// Align flow stem + bottom row under TouchDesigner hub center
+function alignFlowDiagram() {
+  const diagram = document.getElementById('flow-diagram');
+  const hub = document.getElementById('flow-hub');
+  const stem = document.getElementById('flow-stem');
+  const bottomRow = document.getElementById('flow-row-bottom');
+  if (!diagram || !hub || !stem || !bottomRow) return;
+
+  const diagramRect = diagram.getBoundingClientRect();
+  const hubRect = hub.getBoundingClientRect();
+
+  // Hub center relative to diagram left
+  const hubCenterX = hubRect.left + hubRect.width / 2 - diagramRect.left;
+
+  // Position stem at hub center
+  stem.style.position = 'relative';
+  stem.style.left = hubCenterX + 'px';
+  stem.style.transform = 'translateX(-50%)';
+
+  // Position bottom row so its center aligns with hub center
+  const bottomWidth = bottomRow.scrollWidth;
+  const offsetX = hubCenterX - bottomWidth / 2;
+  bottomRow.style.position = 'relative';
+  bottomRow.style.left = offsetX + 'px';
+  bottomRow.style.width = 'fit-content';
+}
+
+window.addEventListener('load', alignFlowDiagram);
+window.addEventListener('resize', alignFlowDiagram);
 </script>
 </body>
 </html>
