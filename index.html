@@ -349,6 +349,7 @@ nav.scrolled {
   margin-top: 32px;
   padding-top: 32px;
   border-top: 1px solid var(--border);
+  perspective: 800px;
 }
 .tech-tags span {
   font-family: var(--font-mono);
@@ -357,11 +358,13 @@ nav.scrolled {
   border: 1px solid var(--border);
   padding: 6px 14px;
   letter-spacing: 0.04em;
-  transition: border-color 0.3s, color 0.3s;
+  transform-style: preserve-3d;
+  transition: border-color 0.3s, color 0.3s, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .tech-tags span:hover {
   border-color: rgba(57, 255, 20, 0.3);
   color: var(--accent);
+  transform: translateY(-3px) rotateX(-5deg) rotateY(3deg);
 }
 
 /* Section spacing */
@@ -542,51 +545,25 @@ section {
   padding: 0 8px;
 }
 
-/* T-shaped flow diagram */
-.flow-t {
+/* Flow diagram */
+.flow-diagram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 40px 0 0;
-  padding-bottom: 100px;
 }
-.flow-t-main {
+.flow-row {
   display: flex;
-  align-items: flex-start;
+  flex-direction: row;
+  align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
   gap: 0;
 }
-.flow-t-main > .flow-node,
-.flow-t-main > .flow-arrow {
-  margin-top: 10px;
-}
-.flow-t-hub-wrap {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.flow-t-hub-wrap > .flow-node-hub {
-  margin-top: 0;
-}
-.flow-t-branch {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.flow-t-stem {
+.flow-stem {
   width: 1px;
-  height: 32px;
-  background: linear-gradient(to bottom, var(--accent), rgba(57, 255, 20, 0.3));
-}
-.flow-t-audio {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0;
+  height: 40px;
+  background: var(--accent);
+  margin: 0 auto;
 }
 
 /* Demo section */
@@ -714,34 +691,9 @@ footer p {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  .flow-t {
-    padding-bottom: 0;
-  }
-  .flow-t-main {
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-  .flow-t-main > .flow-node,
-  .flow-t-main > .flow-arrow {
-    margin-top: 0;
-  }
-  .flow-t-main .flow-arrow {
-    transform: rotate(90deg);
-    padding: 4px 0;
-  }
-  .flow-t-branch {
-    position: static;
-    transform: none;
-  }
-  .flow-t-audio {
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-  .flow-t-audio .flow-arrow {
-    transform: rotate(90deg);
-    padding: 4px 0;
+  .flow-row {
+    flex-wrap: wrap;
+    gap: 6px;
   }
 }
 
@@ -874,29 +826,25 @@ footer p {
         <p>The same CHOP data simultaneously drives visuals in TouchDesigner — particle systems, color shifts, and geometry transformations respond to every gesture.</p>
       </div>
     </div>
-    <div class="flow-t reveal">
-      <div class="flow-t-main">
+    <div class="flow-diagram reveal">
+      <div class="flow-row">
         <span class="flow-node">Webcam</span>
         <span class="flow-arrow">→</span>
         <span class="flow-node">MediaPipe</span>
         <span class="flow-arrow">→</span>
-        <div class="flow-t-hub-wrap">
-          <span class="flow-node flow-node-hub">TouchDesigner<span class="flow-node-sub">CHOP</span></span>
-          <div class="flow-t-branch">
-            <div class="flow-t-stem"></div>
-            <div class="flow-t-audio">
-              <span class="flow-node">OSC</span>
-              <span class="flow-arrow">→</span>
-              <span class="flow-node">Ableton Live</span>
-              <span class="flow-arrow">→</span>
-              <span class="flow-node flow-node-out">Audio Output</span>
-            </div>
-          </div>
-        </div>
+        <span class="flow-node flow-node-hub">TouchDesigner<span class="flow-node-sub">CHOP</span></span>
         <span class="flow-arrow">→</span>
         <span class="flow-node">Visual Engine</span>
         <span class="flow-arrow">→</span>
         <span class="flow-node flow-node-out">Display</span>
+      </div>
+      <div class="flow-stem"></div>
+      <div class="flow-row">
+        <span class="flow-node">OSC</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node">Ableton Live</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node flow-node-out">Audio Output</span>
       </div>
     </div>
   </div>
