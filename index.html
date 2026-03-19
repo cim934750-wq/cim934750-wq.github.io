@@ -487,26 +487,17 @@ section {
 
 /* Flow diagram */
 .flow-diagram {
+  position: relative;
+  padding: 40px 0 0;
+}
+.flow-top, .flow-bottom-row {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 40px 0 0;
 }
-.flow-hub-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.flow-stem {
-  width: 1px;
-  height: 40px;
-  background: var(--accent);
-}
-.flow-hub-bottom {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.flow-bottom-row {
+  margin-top: 40px;
 }
 .flow-node {
   font-family: var(--font-mono);
@@ -667,13 +658,8 @@ footer p {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  .flow-diagram {
+  .flow-top, .flow-bottom-row {
     flex-wrap: wrap;
-    gap: 8px;
-  }
-  .flow-hub-bottom {
-    flex-wrap: wrap;
-    justify-content: center;
     gap: 8px;
   }
 }
@@ -808,25 +794,24 @@ footer p {
       </div>
     </div>
     <div class="flow-diagram reveal">
-      <span class="flow-node">Webcam</span>
-      <span class="flow-arrow">→</span>
-      <span class="flow-node">MediaPipe</span>
-      <span class="flow-arrow">→</span>
-      <div class="flow-hub-group">
-        <span class="flow-node flow-hub">TouchDesigner<br><small>CHOP</small></span>
-        <div class="flow-stem"></div>
-        <div class="flow-hub-bottom">
-          <span class="flow-node">OSC</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-node">Ableton Live</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-node flow-endpoint">Audio Output</span>
-        </div>
+      <div class="flow-top">
+        <span class="flow-node">Webcam</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node">MediaPipe</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node flow-hub" id="flow-hub">TouchDesigner<br><small>CHOP</small></span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node">Visual Engine</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node flow-endpoint">Display</span>
       </div>
-      <span class="flow-arrow">→</span>
-      <span class="flow-node">Visual Engine</span>
-      <span class="flow-arrow">→</span>
-      <span class="flow-node flow-endpoint">Display</span>
+      <div class="flow-bottom-row">
+        <span class="flow-node">OSC</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node" id="flow-ableton">Ableton Live</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node flow-endpoint">Audio Output</span>
+      </div>
     </div>
   </div>
 </section>
@@ -1018,6 +1003,29 @@ function addTilt(selector) {
 }
 addTilt('.btn-primary');
 addTilt('.tech-tags span');
+
+// Draw stem line from TouchDesigner bottom-center to Ableton Live top-center
+function drawStem() {
+  var hub = document.getElementById('flow-hub');
+  var ableton = document.getElementById('flow-ableton');
+  var diagram = document.querySelector('.flow-diagram');
+  if (!hub || !ableton || !diagram) return;
+  var stem = document.getElementById('flow-stem');
+  if (!stem) {
+    stem = document.createElement('div');
+    stem.id = 'flow-stem';
+    stem.style.cssText = 'position:absolute;width:1px;background:#39FF14;pointer-events:none;';
+    diagram.appendChild(stem);
+  }
+  var dr = diagram.getBoundingClientRect();
+  var hr = hub.getBoundingClientRect();
+  var ar = ableton.getBoundingClientRect();
+  stem.style.left = (hr.left + hr.width / 2 - dr.left) + 'px';
+  stem.style.top = (hr.bottom - dr.top) + 'px';
+  stem.style.height = (ar.top - hr.bottom) + 'px';
+}
+window.addEventListener('load', drawStem);
+window.addEventListener('resize', drawStem);
 </script>
 </body>
 </html>
