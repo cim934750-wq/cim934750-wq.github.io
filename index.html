@@ -543,20 +543,30 @@ section {
 /* T-shaped flow diagram */
 .flow-t {
   padding: 40px 0 0;
-  position: relative;
 }
 .flow-t-main {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   flex-wrap: wrap;
   gap: 0;
+}
+.flow-t-main > .flow-node,
+.flow-t-main > .flow-arrow {
+  margin-top: 10px;
+}
+.flow-t-hub-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.flow-t-hub-wrap > .flow-node-hub {
+  margin-top: 0;
 }
 .flow-t-branch {
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
 }
 .flow-t-stem {
   width: 1px;
@@ -588,6 +598,9 @@ section {
   font-size: clamp(0.9rem, 1.6vw, 1rem);
   margin-bottom: 40px;
   line-height: 1.7;
+}
+.demo-content .btn-primary {
+  margin-top: 40px;
 }
 .btn-note {
   font-family: var(--font-mono);
@@ -695,7 +708,12 @@ footer p {
   }
   .flow-t-main {
     flex-direction: column;
+    align-items: center;
     gap: 4px;
+  }
+  .flow-t-main > .flow-node,
+  .flow-t-main > .flow-arrow {
+    margin-top: 0;
   }
   .flow-t-main .flow-arrow {
     transform: rotate(90deg);
@@ -703,6 +721,7 @@ footer p {
   }
   .flow-t-audio {
     flex-direction: column;
+    align-items: center;
     gap: 4px;
   }
   .flow-t-audio .flow-arrow {
@@ -846,21 +865,23 @@ footer p {
         <span class="flow-arrow">→</span>
         <span class="flow-node">MediaPipe</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node flow-node-hub" id="flow-hub">TouchDesigner<span class="flow-node-sub">CHOP</span></span>
+        <div class="flow-t-hub-wrap">
+          <span class="flow-node flow-node-hub">TouchDesigner<span class="flow-node-sub">CHOP</span></span>
+          <div class="flow-t-branch">
+            <div class="flow-t-stem"></div>
+            <div class="flow-t-audio">
+              <span class="flow-node">OSC</span>
+              <span class="flow-arrow">→</span>
+              <span class="flow-node">Ableton Live</span>
+              <span class="flow-arrow">→</span>
+              <span class="flow-node flow-node-out">Audio Output</span>
+            </div>
+          </div>
+        </div>
         <span class="flow-arrow">→</span>
         <span class="flow-node">Visual Engine</span>
         <span class="flow-arrow">→</span>
         <span class="flow-node flow-node-out">Display</span>
-      </div>
-      <div class="flow-t-branch">
-        <div class="flow-t-stem"></div>
-        <div class="flow-t-audio">
-          <span class="flow-node">OSC</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-node">Ableton Live</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-node flow-node-out">Audio Output</span>
-        </div>
       </div>
     </div>
   </div>
@@ -1072,22 +1093,6 @@ const tagObserver = new IntersectionObserver((entries) => {
 const techTagsWrap = document.querySelector('.tech-tags');
 if (techTagsWrap) tagObserver.observe(techTagsWrap);
 
-// Align T-branch under TouchDesigner hub
-function alignFlowBranch() {
-  const hub = document.getElementById('flow-hub');
-  const flowT = document.querySelector('.flow-t');
-  const branch = document.querySelector('.flow-t-branch');
-  if (!hub || !flowT || !branch) return;
-  const flowRect = flowT.getBoundingClientRect();
-  const hubRect = hub.getBoundingClientRect();
-  const hubCenter = hubRect.left + hubRect.width / 2 - flowRect.left;
-  const branchWidth = branch.getBoundingClientRect().width;
-  branch.style.marginLeft = '0';
-  branch.style.alignSelf = 'flex-start';
-  branch.style.transform = 'translateX(' + (hubCenter - branchWidth / 2) + 'px)';
-}
-alignFlowBranch();
-window.addEventListener('resize', alignFlowBranch);
 </script>
 </body>
 </html>
