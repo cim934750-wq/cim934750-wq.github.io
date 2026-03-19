@@ -348,7 +348,7 @@ nav.scrolled {
 .tech-tags span:hover {
   border-color: rgba(57, 255, 20, 0.3);
   color: var(--accent);
-  transform: perspective(800px) translateY(-2px) rotateX(-3deg) rotateY(2deg);
+  transform: perspective(800px) translateY(-4px) rotateX(-6deg) rotateY(5deg);
 }
 
 /* Section spacing */
@@ -498,12 +498,8 @@ section {
   position: relative;
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s;
 }
-.flow-node:nth-child(odd):hover {
-  transform: perspective(800px) translateY(-3px) rotateX(-5deg) rotateY(3deg);
-  border-color: rgba(57, 255, 20, 0.4);
-}
-.flow-node:nth-child(even):hover {
-  transform: perspective(800px) translateY(-3px) rotateX(-5deg) rotateY(-3deg);
+.flow-node:hover {
+  transform: perspective(800px) translateY(-4px) rotateX(-6deg) rotateY(5deg);
   border-color: rgba(57, 255, 20, 0.4);
 }
 .flow-node-hub {
@@ -512,6 +508,17 @@ section {
   flex-direction: column;
   align-items: center;
   gap: 2px;
+  position: relative;
+}
+.flow-node-hub::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 40px;
+  background: var(--accent);
 }
 .flow-node-sub {
   font-size: 0.6rem;
@@ -534,6 +541,7 @@ section {
   flex-direction: column;
   align-items: center;
   padding: 40px 0 0;
+  gap: 48px;
 }
 .flow-row {
   display: flex;
@@ -541,11 +549,6 @@ section {
   align-items: center;
   justify-content: center;
   gap: 0;
-}
-.flow-stem {
-  width: 1px;
-  height: 40px;
-  background: var(--accent);
 }
 
 /* Demo section */
@@ -820,7 +823,6 @@ footer p {
         <span class="flow-arrow">→</span>
         <span class="flow-node flow-node-out">Display</span>
       </div>
-      <div class="flow-stem" id="flow-stem"></div>
       <div class="flow-row" id="flow-row-bottom">
         <span class="flow-node">OSC</span>
         <span class="flow-arrow">→</span>
@@ -977,20 +979,22 @@ if (particleContainer) {
 }
 
 
-// Tech tags — stagger entrance
-const techTags = document.querySelectorAll('.tech-tags span');
+// Tech tags — stagger entrance (opacity only, no inline transform)
 const tagObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       const spans = entry.target.querySelectorAll('span');
       spans.forEach((s, i) => {
         s.style.opacity = '0';
-        s.style.transform = 'translateY(10px)';
-        s.style.transition = 'opacity 0.4s ease ' + (i * 0.1) + 's, transform 0.4s ease ' + (i * 0.1) + 's';
+        s.style.transition = 'opacity 0.4s ease ' + (i * 0.1) + 's';
         requestAnimationFrame(() => {
           s.style.opacity = '1';
-          s.style.transform = 'translateY(0)';
         });
+        // Clean up inline styles after animation so CSS :hover works
+        setTimeout(() => {
+          s.style.opacity = '';
+          s.style.transition = '';
+        }, 600 + i * 100);
       });
       tagObserver.unobserve(entry.target);
     }
