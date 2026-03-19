@@ -1008,8 +1008,10 @@ addTilt('.tech-tags span');
 function drawStem() {
   var hub = document.getElementById('flow-hub');
   var ableton = document.getElementById('flow-ableton');
+  var bottomRow = document.querySelector('.flow-bottom-row');
   var diagram = document.querySelector('.flow-diagram');
-  if (!hub || !ableton || !diagram) return;
+  if (!hub || !ableton || !bottomRow || !diagram) return;
+
   var stem = document.getElementById('flow-stem');
   if (!stem) {
     stem = document.createElement('div');
@@ -1017,6 +1019,15 @@ function drawStem() {
     stem.style.cssText = 'position:absolute;width:1px;background:#39FF14;pointer-events:none;';
     diagram.appendChild(stem);
   }
+
+  // Step 1: shift bottom row so Ableton Live center aligns with TouchDesigner center
+  var hubCenterX = hub.getBoundingClientRect().left + hub.getBoundingClientRect().width / 2;
+  bottomRow.style.position = 'relative';
+  bottomRow.style.left = '0px';
+  var abletonCenterX = ableton.getBoundingClientRect().left + ableton.getBoundingClientRect().width / 2;
+  bottomRow.style.left = (hubCenterX - abletonCenterX) + 'px';
+
+  // Step 2: draw stem after shift
   var dr = diagram.getBoundingClientRect();
   var hr = hub.getBoundingClientRect();
   var ar = ableton.getBoundingClientRect();
