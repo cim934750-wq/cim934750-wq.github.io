@@ -118,6 +118,105 @@ body {
   transform: translateY(0);
 }
 
+/* Staggered reveal for children */
+.reveal-stagger .reveal:nth-child(1) { transition-delay: 0s; }
+.reveal-stagger .reveal:nth-child(2) { transition-delay: 0.1s; }
+.reveal-stagger .reveal:nth-child(3) { transition-delay: 0.2s; }
+.reveal-stagger .reveal:nth-child(4) { transition-delay: 0.3s; }
+
+/* 3D tilt cards */
+.tilt {
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease;
+}
+.tilt-inner {
+  transform: translateZ(20px);
+}
+
+/* Magnetic button effect */
+.btn-magnetic {
+  transition: box-shadow 0.3s, transform 0.15s ease-out;
+}
+
+/* Glow text on scroll */
+.glow-on-scroll {
+  transition: text-shadow 0.6s ease;
+}
+.glow-on-scroll.glowing {
+  text-shadow: 0 0 40px rgba(57, 255, 20, 0.25), 0 0 80px rgba(57, 255, 20, 0.1);
+}
+
+/* Parallax layer */
+.parallax-wrap {
+  position: relative;
+  overflow: visible;
+}
+
+/* Hero floating particles */
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 50%;
+  opacity: 0;
+  animation: particleFade 4s ease-in-out infinite;
+}
+@keyframes particleFade {
+  0%, 100% { opacity: 0; transform: translateY(0); }
+  50% { opacity: 0.6; transform: translateY(-40px); }
+}
+
+/* Scroll progress bar */
+.scroll-progress {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  height: 2px;
+  background: var(--accent);
+  z-index: 1001;
+  transform-origin: left;
+  transform: scaleX(0);
+  width: 100%;
+  transition: none;
+}
+
+/* Video hover lift */
+.video-wrap {
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.video-wrap:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 20px rgba(57, 255, 20, 0.08);
+}
+
+/* Section divider line animation */
+.section-line {
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  margin-bottom: 40px;
+  transition: width 1s ease;
+}
+.section-line.visible {
+  width: 80px;
+}
+
+/* Quote box hover */
+.quote-box {
+  transition: border-color 0.3s, background 0.3s;
+}
+.quote-box:hover {
+  border-left-color: var(--accent);
+  background: rgba(57, 255, 20, 0.06);
+}
+
 /* Layout */
 .container {
   max-width: 1080px;
@@ -224,7 +323,7 @@ nav.scrolled {
   font-size: clamp(0.95rem, 1.8vw, 1.1rem);
   color: var(--fg-dim);
   max-width: 560px;
-  margin-bottom: 36px;
+  margin-bottom: 40px;
   line-height: 1.7;
 }
 .btn-primary {
@@ -246,7 +345,9 @@ nav.scrolled {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 40px;
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
 }
 .tech-tags span {
   font-family: var(--font-mono);
@@ -255,6 +356,11 @@ nav.scrolled {
   border: 1px solid var(--border);
   padding: 6px 14px;
   letter-spacing: 0.04em;
+  transition: border-color 0.3s, color 0.3s;
+}
+.tech-tags span:hover {
+  border-color: rgba(57, 255, 20, 0.3);
+  color: var(--accent);
 }
 
 /* Section spacing */
@@ -363,6 +469,13 @@ section {
 /* 4-col process grid */
 .process-grid-4 {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  align-items: stretch;
+  gap: 28px;
+}
+.process-grid-4 .process-card {
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Mapping list inside card */
@@ -418,46 +531,37 @@ section {
   padding: 0 8px;
 }
 
-/* Split flow layout */
-.flow-split {
+/* T-shaped flow diagram */
+.flow-t {
   padding: 40px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.flow-split-top {
+.flow-t-main {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 0;
+  gap: 0;
 }
-.flow-split-branches {
+.flow-t-branch {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 640px;
-  padding-top: 16px;
-  border-left: 1px solid rgba(57, 255, 20, 0.25);
-  margin-left: calc(50% + 20px);
-  padding-left: 20px;
-  position: relative;
+  align-items: center;
+  margin-top: 0;
 }
-.flow-split-branches::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -1px;
+.flow-t-stem {
   width: 1px;
-  height: 100%;
-  background: linear-gradient(to bottom, var(--accent), transparent);
+  height: 32px;
+  background: linear-gradient(to bottom, var(--accent), rgba(57, 255, 20, 0.3));
 }
-.flow-branch {
+.flow-t-audio {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-}
-.flow-branch-line {
-  display: none;
+  justify-content: center;
+  gap: 0;
 }
 
 /* Demo section */
@@ -580,21 +684,23 @@ footer p {
   .process-grid,
   .process-grid-4 {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
-  .flow-split-top {
+  .flow-t-main {
     flex-direction: column;
     gap: 4px;
   }
-  .flow-split-top .flow-arrow {
+  .flow-t-main .flow-arrow {
     transform: rotate(90deg);
     padding: 4px 0;
   }
-  .flow-split-branches {
-    margin-left: 32px;
-  }
-  .flow-branch {
-    flex-wrap: wrap;
+  .flow-t-audio {
+    flex-direction: column;
     gap: 4px;
+  }
+  .flow-t-audio .flow-arrow {
+    transform: rotate(90deg);
+    padding: 4px 0;
   }
 }
 
@@ -620,6 +726,9 @@ footer p {
   </svg>
 </div>
 
+<!-- Scroll progress -->
+<div class="scroll-progress" aria-hidden="true"></div>
+
 <!-- Custom cursor -->
 <div class="cursor-dot" aria-hidden="true"></div>
 <div class="cursor-ring" aria-hidden="true"></div>
@@ -639,11 +748,12 @@ footer p {
 </nav>
 
 <!-- Hero -->
-<section class="hero">
+<section class="hero parallax-wrap">
+  <div class="hero-particles" aria-hidden="true"></div>
   <div class="container">
     <div class="hero-content reveal">
       <p class="hero-label">Interactive AV Artist</p>
-      <h1>Sound that responds<br>to <span class="highlight">your body</span></h1>
+      <h1 class="glow-on-scroll">Sound that responds<br>to <span class="highlight">your body</span></h1>
       <p class="hero-desc">Real-time audiovisual installations using motion tracking, generative sound, and live visual processing. Every performance is unique — shaped by the audience.</p>
       <a href="#demo" class="btn-primary">See It Live →</a>
       <div class="tech-tags">
@@ -659,9 +769,10 @@ footer p {
 <!-- Work -->
 <section id="work">
   <div class="container">
+    <div class="section-line reveal"></div>
     <div class="work-header reveal">
       <p class="section-label">Selected Work</p>
-      <h2>Graduation Exhibition 2024</h2>
+      <h2>Graduation Exhibition 2025</h2>
       <p>A camera-tracking-based interactive audiovisual installation. Audience movement generates sound and visuals in real-time.</p>
     </div>
 
@@ -690,61 +801,58 @@ footer p {
 <!-- Process -->
 <section id="process">
   <div class="container">
+    <div class="section-line reveal"></div>
     <div class="reveal">
       <p class="section-label">How It Works</p>
       <h2 style="font-family:var(--font-mono);font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;color:#fff;margin-bottom:40px;letter-spacing:-0.02em;">From Movement to Sound</h2>
     </div>
-    <div class="process-grid process-grid-4">
-      <div class="process-card reveal">
+    <div class="process-grid process-grid-4 reveal-stagger">
+      <div class="process-card tilt reveal">
         <p class="step-num">01</p>
         <h3>CAPTURE</h3>
-        <p>MediaPipe Hand Tracking via webcam detects 21 landmarks per hand in real-time. Two core data streams are extracted: hand position (x, y, z coordinates) and the distance between both hands.</p>
+        <p>MediaPipe Hand Tracking via webcam detects 21 key points per hand. Two data streams are extracted: hand position (x, y, z) and distance between both hands.</p>
       </div>
-      <div class="process-card reveal">
+      <div class="process-card tilt reveal">
         <p class="step-num">02</p>
         <h3>SIGNAL PROCESSING</h3>
-        <p>TouchDesigner receives raw tracking data and processes it through CHOPs — smoothing noise, normalizing ranges, and converting hand coordinates into clean control signals ready for parameter mapping.</p>
+        <p>TouchDesigner processes raw tracking data through CHOPs — smoothing noise, normalizing ranges, and converting coordinates into clean control signals.</p>
       </div>
-      <div class="process-card reveal">
+      <div class="process-card tilt reveal">
         <p class="step-num">03</p>
         <h3>AUDIO MAPPING</h3>
-        <p>Processed signals are sent to Ableton Live via OSC:</p>
+        <p>Control signals are sent to Ableton Live via OSC:</p>
         <ul class="mapping-list">
           <li>Hand position (x, y) → Volume & Pitch</li>
           <li>Distance between hands → Reverb depth & Delay intensity</li>
           <li>Rapid movement detection → Glitch system activation</li>
         </ul>
       </div>
-      <div class="process-card reveal">
+      <div class="process-card tilt reveal">
         <p class="step-num">04</p>
         <h3>VISUAL FEEDBACK</h3>
-        <p>Simultaneously, the same CHOP data drives visual parameters in TouchDesigner — particle behavior, color shifts, geometry transformations — creating a unified audiovisual response to every gesture.</p>
+        <p>The same CHOP data simultaneously drives visuals in TouchDesigner — particle systems, color shifts, and geometry transformations respond to every gesture.</p>
       </div>
     </div>
-    <div class="flow-split reveal">
-      <div class="flow-split-top">
+    <div class="flow-t reveal">
+      <div class="flow-t-main">
         <span class="flow-node">Webcam</span>
         <span class="flow-arrow">→</span>
         <span class="flow-node">MediaPipe</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node flow-node-hub">TouchDesigner<span class="flow-node-sub">CHOP</span></span>
+        <span class="flow-node flow-node-hub" id="flow-hub">TouchDesigner<span class="flow-node-sub">CHOP</span></span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node">Visual Engine</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node flow-node-out">Display</span>
       </div>
-      <div class="flow-split-branches">
-        <div class="flow-branch">
-          <span class="flow-branch-line"></span>
-          <span class="flow-arrow">→</span>
+      <div class="flow-t-branch">
+        <div class="flow-t-stem"></div>
+        <div class="flow-t-audio">
           <span class="flow-node">OSC</span>
           <span class="flow-arrow">→</span>
           <span class="flow-node">Ableton Live</span>
           <span class="flow-arrow">→</span>
           <span class="flow-node flow-node-out">Audio Output</span>
-        </div>
-        <div class="flow-branch">
-          <span class="flow-branch-line"></span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-node">Visual Engine</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-node flow-node-out">Display</span>
         </div>
       </div>
     </div>
@@ -833,7 +941,7 @@ function animateRing() {
 animateRing();
 
 // Cursor hover effect on links and buttons
-const interactives = document.querySelectorAll('a, button, .btn-primary');
+const interactives = document.querySelectorAll('a, button, .btn-primary, .process-card, .tech-tags span');
 interactives.forEach(el => {
   el.addEventListener('mouseenter', () => ring.classList.add('hover'));
   el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
@@ -841,12 +949,22 @@ interactives.forEach(el => {
 
 // Nav scroll effect
 const nav = document.querySelector('nav');
+
+// Scroll progress bar
+const scrollProgress = document.querySelector('.scroll-progress');
+
 window.addEventListener('scroll', () => {
   nav.classList.toggle('scrolled', window.scrollY > 20);
+
+  // Progress bar
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+  scrollProgress.style.transform = 'scaleX(' + progress + ')';
 }, { passive: true });
 
 // Reveal on scroll
-const revealEls = document.querySelectorAll('.reveal');
+const revealEls = document.querySelectorAll('.reveal, .section-line');
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -857,8 +975,95 @@ const observer = new IntersectionObserver((entries) => {
   threshold: 0.15,
   rootMargin: '0px 0px -40px 0px'
 });
-
 revealEls.forEach(el => observer.observe(el));
+
+// Glow on scroll for hero heading
+const glowEls = document.querySelectorAll('.glow-on-scroll');
+const glowObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    entry.target.classList.toggle('glowing', entry.isIntersecting);
+  });
+}, { threshold: 0.5 });
+glowEls.forEach(el => glowObserver.observe(el));
+
+// 3D Tilt effect on cards
+const tiltCards = document.querySelectorAll('.tilt');
+tiltCards.forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -8;
+    const rotateY = ((x - centerX) / centerX) * 8;
+    card.style.transform = 'perspective(600px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale(1.02)';
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'perspective(600px) rotateX(0) rotateY(0) scale(1)';
+  });
+});
+
+// Hero particles
+const particleContainer = document.querySelector('.hero-particles');
+if (particleContainer) {
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.classList.add('particle');
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 4 + 's';
+    p.style.animationDuration = (3 + Math.random() * 3) + 's';
+    p.style.width = (1 + Math.random() * 2) + 'px';
+    p.style.height = p.style.width;
+    particleContainer.appendChild(p);
+  }
+}
+
+// Parallax on hero — subtle shift based on mouse
+const heroContent = document.querySelector('.hero-content');
+if (heroContent) {
+  document.addEventListener('mousemove', e => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 12;
+    const y = (e.clientY / window.innerHeight - 0.5) * 8;
+    heroContent.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+  });
+}
+
+// Magnetic button effect
+document.querySelectorAll('.btn-primary').forEach(btn => {
+  btn.addEventListener('mousemove', e => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    btn.style.transform = 'translate(' + x * 0.2 + 'px, ' + y * 0.2 + 'px)';
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = 'translate(0, 0)';
+  });
+});
+
+// Tech tags — stagger entrance
+const techTags = document.querySelectorAll('.tech-tags span');
+const tagObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const spans = entry.target.querySelectorAll('span');
+      spans.forEach((s, i) => {
+        s.style.opacity = '0';
+        s.style.transform = 'translateY(10px)';
+        s.style.transition = 'opacity 0.4s ease ' + (i * 0.1) + 's, transform 0.4s ease ' + (i * 0.1) + 's';
+        requestAnimationFrame(() => {
+          s.style.opacity = '1';
+          s.style.transform = 'translateY(0)';
+        });
+      });
+      tagObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+const techTagsWrap = document.querySelector('.tech-tags');
+if (techTagsWrap) tagObserver.observe(techTagsWrap);
 </script>
 </body>
 </html>
