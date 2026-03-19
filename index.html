@@ -488,19 +488,25 @@ section {
 /* Flow diagram */
 .flow-diagram {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 12px;
   padding: 40px 0 0;
 }
-.flow-row {
+.flow-hub-group {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
 }
 .flow-stem {
   width: 1px;
   height: 40px;
   background: var(--accent);
+}
+.flow-hub-bottom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 .flow-node {
   font-family: var(--font-mono);
@@ -661,7 +667,11 @@ footer p {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  .flow-row {
+  .flow-diagram {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .flow-hub-bottom {
     flex-wrap: wrap;
     justify-content: center;
     gap: 8px;
@@ -798,25 +808,25 @@ footer p {
       </div>
     </div>
     <div class="flow-diagram reveal">
-      <div class="flow-row">
-        <span class="flow-node">Webcam</span>
-        <span class="flow-arrow">→</span>
-        <span class="flow-node">MediaPipe</span>
-        <span class="flow-arrow">→</span>
+      <span class="flow-node">Webcam</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node">MediaPipe</span>
+      <span class="flow-arrow">→</span>
+      <div class="flow-hub-group">
         <span class="flow-node flow-hub">TouchDesigner<br><small>CHOP</small></span>
-        <span class="flow-arrow">→</span>
-        <span class="flow-node">Visual Engine</span>
-        <span class="flow-arrow">→</span>
-        <span class="flow-node flow-endpoint">Display</span>
+        <div class="flow-stem"></div>
+        <div class="flow-hub-bottom">
+          <span class="flow-node">OSC</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node">Ableton Live</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node flow-endpoint">Audio Output</span>
+        </div>
       </div>
-      <div class="flow-stem"></div>
-      <div class="flow-row">
-        <span class="flow-node">OSC</span>
-        <span class="flow-arrow">→</span>
-        <span class="flow-node">Ableton Live</span>
-        <span class="flow-arrow">→</span>
-        <span class="flow-node flow-endpoint">Audio Output</span>
-      </div>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node">Visual Engine</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node flow-endpoint">Display</span>
     </div>
   </div>
 </section>
