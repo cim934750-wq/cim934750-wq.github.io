@@ -552,15 +552,16 @@ section {
   background: var(--accent);
   justify-self: center;
 }
-/* Bottom row: spans columns 4-6 centered under column 5 */
+/* Bottom row: centered on column 5 (TouchDesigner) */
 .flow-bottom {
-  grid-column: 1 / -1;
+  grid-column: 5;
   grid-row: 3;
+  justify-self: center;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
   gap: 0;
+  white-space: nowrap;
 }
 
 /* Demo section */
@@ -703,6 +704,7 @@ footer p {
   }
   .flow-bottom {
     grid-column: 1;
+    justify-self: center;
     flex-wrap: wrap;
     justify-content: center;
     gap: 4px;
