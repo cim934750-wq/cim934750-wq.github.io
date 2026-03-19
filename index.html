@@ -1031,9 +1031,34 @@ function drawStem() {
   var dr = diagram.getBoundingClientRect();
   var hr = hub.getBoundingClientRect();
   var ar = ableton.getBoundingClientRect();
-  stem.style.left = (hr.left + hr.width / 2 - dr.left) + 'px';
-  stem.style.top = (hr.bottom - dr.top) + 'px';
-  stem.style.height = (ar.top - hr.bottom) + 'px';
+  var stemX = hr.left + hr.width / 2 - dr.left;
+  var stemTop = hr.bottom - dr.top;
+  var stemHeight = ar.top - hr.bottom;
+  stem.style.left = stemX + 'px';
+  stem.style.top = stemTop + 'px';
+  stem.style.height = stemHeight + 'px';
+
+  // DEBUG: log values
+  var offset = hubCenterX - abletonCenterX;
+  console.log('TouchDesigner 중앙 X:', hr.left + hr.width / 2);
+  console.log('Ableton Live 중앙 X (이동 후):', ar.left + ar.width / 2);
+  console.log('세로선 left:', stem.style.left);
+  console.log('offset 값:', offset);
+
+  // DEBUG: red dots at connection points
+  function makeDot(id, x, y) {
+    var dot = document.getElementById(id);
+    if (!dot) {
+      dot = document.createElement('div');
+      dot.id = id;
+      dot.style.cssText = 'position:absolute;width:6px;height:6px;background:red;border-radius:50%;pointer-events:none;z-index:999;';
+      diagram.appendChild(dot);
+    }
+    dot.style.left = (x - 3) + 'px';
+    dot.style.top = (y - 3) + 'px';
+  }
+  makeDot('debug-dot-hub', stemX, stemTop);
+  makeDot('debug-dot-ableton', ar.left + ar.width / 2 - dr.left, ar.top - dr.top);
 }
 window.addEventListener('load', drawStem);
 window.addEventListener('resize', drawStem);
